@@ -39,7 +39,7 @@ final totalUnreadCountUserProvider = Provider<int>((ref) {
   return chatsAsync.when(
     data: (chats) => chats.where((c) => c.unreadCountUser > 0).length,
     loading: () => 0,
-    error: (_, __) => 0,
+    error: (_, _) => 0,
   );
 });
 
@@ -48,6 +48,6 @@ final totalUnreadCountWorkerProvider = Provider<int>((ref) {
   return chatsAsync.when(
     data: (chats) => chats.where((c) => c.unreadCountWorker > 0).length,
     loading: () => 0,
-    error: (_, __) => 0,
+    error: (_, _) => 0,
   );
 });

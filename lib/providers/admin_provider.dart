@@ -39,5 +39,5 @@ final workerEarningsProvider = FutureProvider.family<double, String>((ref, worke
   final jobs = await firestoreService.getWorkerJobs(workerId);
   return jobs
       .where((j) => (j.status == 'completed' || j.status == 'reviewed') && j.price > 0)
-      .fold(0.0, (sum, job) => sum + job.price);
+      .fold<double>(0.0, (sum, job) => sum + job.price);
 });
