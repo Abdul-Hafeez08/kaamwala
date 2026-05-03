@@ -53,7 +53,7 @@ class WorkerEarningsScreen extends ConsumerWidget {
                   child: Column(
                     children: [
                       const Text(
-                        'Total Balance',
+                        'Total Career Earnings',
                         style: TextStyle(fontSize: 14, color: Colors.white70, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 12),
@@ -64,18 +64,6 @@ class WorkerEarningsScreen extends ConsumerWidget {
                           fontWeight: FontWeight.w900,
                           color: Colors.white,
                           letterSpacing: 1,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: const Text(
-                          'Available to Withdraw',
-                          style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],

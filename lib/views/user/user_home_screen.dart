@@ -67,42 +67,25 @@ class _UserHomeScreenState extends ConsumerState<UserHomeScreen> {
                       ),
                       Row(
                         children: [
-                          Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(Icons.chat_bubble_outline_rounded),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (_) => const ChatListScreen(isWorker: false)),
-                                    );
-                                  },
-                                ),
+                          Badge(
+                            label: Text(unreadCount.toString()),
+                            isLabelVisible: unreadCount > 0,
+                            offset: const Offset(-2, 2),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05),
+                                shape: BoxShape.circle,
                               ),
-                              if (unreadCount > 0)
-                                Positioned(
-                                  right: 0,
-                                  top: 0,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
-                                    child: Text(
-                                      unreadCount.toString(),
-                                      style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
-                            ],
+                              child: IconButton(
+                                icon: const Icon(Icons.chat_bubble_outline_rounded),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const ChatListScreen(isWorker: false)),
+                                  );
+                                },
+                              ),
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Container(

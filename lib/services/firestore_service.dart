@@ -186,6 +186,18 @@ class FirestoreService {
     });
   }
 
+  Future<List<JobModel>> getWorkerJobs(String workerId) async {
+    final querySnapshot = await _firestore
+        .collection('jobs')
+        .where('workerId', isEqualTo: workerId)
+        .get();
+    final jobs = querySnapshot.docs
+        .map((doc) => JobModel.fromMap(doc.data()))
+        .toList();
+    jobs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return jobs;
+  }
+
   Future<void> createReview(ReviewModel review) async {
     final docRef = _firestore.collection('reviews').doc();
     final reviewData = review.toMap();

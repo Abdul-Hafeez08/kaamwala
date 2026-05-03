@@ -33,3 +33,11 @@ final jobsByStatusProvider = FutureProvider.family<List<JobModel>, String>((ref,
   final firestoreService = ref.read(firestoreServiceProvider);
   return await firestoreService.getJobsByStatus(status);
 });
+
+final workerEarningsProvider = FutureProvider.family<double, String>((ref, workerId) async {
+  final firestoreService = ref.read(firestoreServiceProvider);
+  final jobs = await firestoreService.getWorkerJobs(workerId);
+  return jobs
+      .where((j) => (j.status == 'completed' || j.status == 'reviewed') && j.price > 0)
+      .fold(0.0, (sum, job) => sum + job.price);
+});

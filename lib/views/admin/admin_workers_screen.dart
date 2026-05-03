@@ -149,6 +149,47 @@ class _WorkerList extends ConsumerWidget {
                 _DetailRow(label: 'EXPERIENCE', value: worker.experience),
                 _DetailRow(label: 'LOCATION', value: worker.location),
                 _DetailRow(label: 'SKILLS', value: worker.skills),
+                const SizedBox(height: 16),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final earningsAsync = ref.watch(workerEarningsProvider(worker.workerId));
+                    return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF2E7D32).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFF2E7D32).withOpacity(0.2)),
+                      ),
+                      child: Column(
+                        children: [
+                          const Text(
+                            'TOTAL EARNINGS',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF2E7D32),
+                              letterSpacing: 1,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          earningsAsync.when(
+                            data: (earnings) => Text(
+                              'Rs. ${earnings.toStringAsFixed(0)}',
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF2E7D32),
+                              ),
+                            ),
+                            loading: () => const CircularProgressIndicator(),
+                            error: (err, _) => Text('Error: $err'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -244,12 +285,34 @@ class _WorkerList extends ConsumerWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    worker.name,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w900,
-                                    ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        worker.name,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+                                      Consumer(
+                                        builder: (context, ref, child) {
+                                          final earnings = ref.watch(workerEarningsProvider(worker.workerId));
+                                          return earnings.when(
+                                            data: (e) => Text(
+                                              'Rs. ${e.toStringAsFixed(0)}',
+                                              style: const TextStyle(
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.w900,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            loading: () => const SizedBox.shrink(),
+                                            error: (_, __) => const SizedBox.shrink(),
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   ),
                                   const SizedBox(height: 2),
                                   Container(
