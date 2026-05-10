@@ -41,3 +41,30 @@ final workerEarningsProvider = FutureProvider.family<double, String>((ref, worke
       .where((j) => (j.status == 'completed' || j.status == 'reviewed') && j.price > 0)
       .fold<double>(0.0, (sum, job) => sum + job.price);
 });
+
+final currentMonthIncomeProvider = FutureProvider<double>((ref) async {
+  final firestoreService = ref.read(firestoreServiceProvider);
+  final allJobs = await firestoreService.getAllJobs();
+  final now = DateTime.now();
+  return allJobs
+      .where((j) =>
+          (j.status == 'completed' || j.status == 'reviewed') &&
+          j.price > 0 &&
+          j.completedAt != null &&
+          j.completedAt!.month == now.month &&
+          j.completedAt!.year == now.year)
+      .fold<double>(0.0, (sum, job) => sum + job.price);
+});
+
+final currentMonthJobsCountProvider = FutureProvider<int>((ref) async {
+  final firestoreService = ref.read(firestoreServiceProvider);
+  final allJobs = await firestoreService.getAllJobs();
+  final now = DateTime.now();
+  return allJobs
+      .where((j) =>
+          (j.status == 'completed' || j.status == 'reviewed') &&
+          j.completedAt != null &&
+          j.completedAt!.month == now.month &&
+          j.completedAt!.year == now.year)
+      .length;
+});

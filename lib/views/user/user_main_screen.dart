@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/curved_bottom_nav.dart';
 import 'user_home_screen.dart';
 import 'user_bookings_screen.dart';
 import 'user_profile_screen.dart';
 import '../chat/chat_list_screen.dart';
+import '../widgets/user_drawer.dart';
 import '../../providers/chat_provider.dart';
 
 class UserMainScreen extends ConsumerStatefulWidget {
@@ -25,65 +27,37 @@ class _UserMainScreenState extends ConsumerState<UserMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final unreadCount = ref.watch(totalUnreadCountUserProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Kaamwala', style: TextStyle(fontWeight: FontWeight.w900)),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu_rounded),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+      ),
+      drawer: const UserDrawer(),
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child: NavigationBar(
-          height: 70,
-          backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
-          elevation: 0,
-          selectedIndex: _currentIndex,
-          onDestinationSelected: (index) {
-            setState(() => _currentIndex = index);
-          },
-          indicatorColor: const Color(0xFFFF9800).withOpacity(0.1),
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-          destinations: [
-            const NavigationDestination(
-              icon: Icon(Icons.home_rounded, color: Colors.grey),
-              selectedIcon: Icon(Icons.home_rounded, color: Color(0xFFFF9800)),
-              label: 'Home',
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.calendar_today_rounded, color: Colors.grey),
-              selectedIcon: Icon(Icons.calendar_today_rounded, color: Color(0xFFFF9800)),
-              label: 'Bookings',
-            ),
-            NavigationDestination(
-              icon: Badge(
-                label: Text(unreadCount.toString()),
-                isLabelVisible: unreadCount > 0,
-                child: const Icon(Icons.chat_bubble_rounded, color: Colors.grey),
-              ),
-              selectedIcon: Badge(
-                label: Text(unreadCount.toString()),
-                isLabelVisible: unreadCount > 0,
-                child: const Icon(Icons.chat_bubble_rounded, color: Color(0xFFFF9800)),
-              ),
-              label: 'Messages',
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.person_rounded, color: Colors.grey),
-              selectedIcon: Icon(Icons.person_rounded, color: Color(0xFFFF9800)),
-              label: 'Profile',
-            ),
-          ],
-        ),
+      bottomNavigationBar: CurvedBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
+        items: [
+          const CurvedNavItem(icon: Icons.home_outlined, activeIcon: Icons.home_rounded, label: 'Home'),
+          const CurvedNavItem(icon: Icons.calendar_today_outlined, activeIcon: Icons.calendar_today_rounded, label: 'Bookings'),
+          CurvedNavItem(
+            icon: Icons.chat_bubble_outline_rounded,
+            activeIcon: Icons.chat_bubble_rounded,
+            label: 'Messages',
+            badge: unreadCount > 0 ? Text(unreadCount.toString()) : null,
+          ),
+          const CurvedNavItem(icon: Icons.person_outline_rounded, activeIcon: Icons.person_rounded, label: 'Profile'),
+        ],
       ),
     );
   }

@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class LoadingIndicator extends StatelessWidget {
   final String? message;
@@ -14,7 +15,7 @@ class LoadingIndicator extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(),
+          const CustomLoadingIndicator(),
           if (message != null) ...[
             const SizedBox(height: 16),
             Text(
@@ -30,3 +31,4 @@ class LoadingIndicator extends StatelessWidget {
     );
   }
 }
+

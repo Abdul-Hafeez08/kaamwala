@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../../providers/admin_provider.dart';
 import '../../models/user_model.dart';
 
@@ -89,68 +90,98 @@ class AdminDashboardScreen extends ConsumerWidget {
                 
                 const SizedBox(height: 32),
                 
-                // Premium Platform Growth Section (Placeholder for now)
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: isDark 
-                        ? [const Color(0xFF1E1E1E), const Color(0xFF121212)] 
-                        : [const Color(0xFFFF9800), const Color(0xFFFFB74D)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: (isDark ? Colors.black : const Color(0xFFFF9800)).withOpacity(0.2),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
+                // Current Month Income Section
+                Consumer(
+                  builder: (context, ref, child) {
+                    final monthIncomeAsync = ref.watch(currentMonthIncomeProvider);
+                    final monthJobsAsync = ref.watch(currentMonthJobsCountProvider);
+                    final approvedWorkersAsync = ref.watch(workersByStatusProvider('approved'));
+                    final currentMonth = DateFormat('MMMM yyyy').format(DateTime.now());
+
+                    return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: isDark 
+                            ? [const Color(0xFF1E1E1E), const Color(0xFF121212)] 
+                            : [const Color(0xFFFF9800), const Color(0xFFFFB74D)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: (isDark ? Colors.black : const Color(0xFFFF9800)).withOpacity(0.2),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                'Platform Health',
-                                style: TextStyle(
-                                  fontSize: 18, 
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark ? Colors.white : Colors.white,
-                                ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Monthly Revenue',
+                                    style: TextStyle(
+                                      fontSize: 18, 
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark ? Colors.white : Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    currentMonth,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: isDark ? Colors.white38 : Colors.white.withOpacity(0.8),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'Everything is running smoothly',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: isDark ? Colors.white38 : Colors.white.withOpacity(0.8),
+                              Icon(Icons.trending_up_rounded, color: Colors.white.withOpacity(0.8), size: 32),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          Row(
+                            children: [
+                              _buildQuickStat(
+                                monthIncomeAsync.when(
+                                  data: (income) => 'Rs. ${income.toStringAsFixed(0)}',
+                                  loading: () => '...',
+                                  error: (_, __) => 'N/A',
                                 ),
+                                'Income',
+                              ),
+                              const SizedBox(width: 24),
+                              _buildQuickStat(
+                                monthJobsAsync.when(
+                                  data: (count) => count.toString(),
+                                  loading: () => '...',
+                                  error: (_, __) => 'N/A',
+                                ),
+                                'Jobs Done',
+                              ),
+                              const SizedBox(width: 24),
+                              _buildQuickStat(
+                                approvedWorkersAsync.when(
+                                  data: (workers) => workers.length.toString(),
+                                  loading: () => '...',
+                                  error: (_, __) => 'N/A',
+                                ),
+                                'Active Workers',
                               ),
                             ],
                           ),
-                          Icon(Icons.auto_awesome_rounded, color: Colors.white.withOpacity(0.8), size: 32),
                         ],
                       ),
-                      const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          _buildQuickStat('98%', 'Uptime'),
-                          const SizedBox(width: 24),
-                          _buildQuickStat('1.2s', 'Latency'),
-                          const SizedBox(width: 24),
-                          _buildQuickStat('OK', 'Firebase'),
-                        ],
-                      ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ],
             ),

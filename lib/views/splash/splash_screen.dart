@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/worker_provider.dart';
@@ -8,6 +8,7 @@ import '../worker/worker_pending_screen.dart';
 import '../worker/worker_profile_setup_screen.dart';
 import '../admin/admin_main_screen.dart';
 import '../user/user_main_screen.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -112,11 +113,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             ),
             const SizedBox(height: 48),
 
-            const CircularProgressIndicator(),
+            const CustomLoadingIndicator(),
           ],
         ),
       ),
     );
   }
 }
+
 

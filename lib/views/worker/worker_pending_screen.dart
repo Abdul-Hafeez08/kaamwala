@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../controllers/auth_controller.dart';
 import '../../providers/worker_provider.dart';
 import '../auth/login_screen.dart';
 import 'worker_dashboard_screen.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class WorkerPendingScreen extends ConsumerWidget {
   const WorkerPendingScreen({super.key});
@@ -94,7 +95,7 @@ class WorkerPendingScreen extends ConsumerWidget {
         );
       },
       loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(child: const CustomLoadingIndicator()),
       ),
       error: (error, _) => Scaffold(
         body: Center(child: SelectableText('Error: $error')),
@@ -102,3 +103,4 @@ class WorkerPendingScreen extends ConsumerWidget {
     );
   }
 }
+

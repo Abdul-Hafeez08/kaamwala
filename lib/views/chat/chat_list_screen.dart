@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../providers/chat_provider.dart';
@@ -6,6 +6,7 @@ import '../../providers/user_provider.dart';
 import '../../providers/worker_provider.dart';
 import '../../models/chat_model.dart';
 import 'chat_room_screen.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class ChatListScreen extends ConsumerWidget {
   final bool isWorker; // To determine which stream to use
@@ -183,7 +184,7 @@ class ChatListScreen extends ConsumerWidget {
             },
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CustomLoadingIndicator()),
         error: (err, _) => Center(child: SelectableText('Error: $err')),
       ),
     );
@@ -198,3 +199,5 @@ class ChatListScreen extends ConsumerWidget {
     }
   }
 }
+
+

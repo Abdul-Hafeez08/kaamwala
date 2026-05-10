@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../models/job_model.dart';
 import '../../providers/user_provider.dart';
 import '../../controllers/booking_controller.dart';
 import 'review_screen.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class UserBookingsScreen extends ConsumerWidget {
   const UserBookingsScreen({super.key});
@@ -47,7 +48,7 @@ class UserBookingsScreen extends ConsumerWidget {
               ],
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const Center(child: CustomLoadingIndicator()),
           error: (err, _) => Center(
             child:
                 SelectableText('Error: $err', style: const TextStyle(color: Colors.red)),
@@ -426,3 +427,5 @@ class _BookingInfoItem extends StatelessWidget {
     );
   }
 }
+
+

@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/admin_provider.dart';
 import '../../models/user_model.dart';
 import 'package:intl/intl.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class AdminUsersScreen extends ConsumerWidget {
   const AdminUsersScreen({super.key});
@@ -149,7 +150,7 @@ class AdminUsersScreen extends ConsumerWidget {
               },
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const Center(child: CustomLoadingIndicator()),
           error: (err, stack) => Center(
             child: SelectableText('Error: $err', style: const TextStyle(color: Colors.red)),
           ),
@@ -158,3 +159,5 @@ class AdminUsersScreen extends ConsumerWidget {
     );
   }
 }
+
+

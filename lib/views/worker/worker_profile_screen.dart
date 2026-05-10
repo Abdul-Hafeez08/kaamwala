@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/worker_controller.dart';
 import '../../providers/worker_provider.dart';
 import '../auth/login_screen.dart';
 import 'worker_profile_setup_screen.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class WorkerProfileScreen extends ConsumerWidget {
   const WorkerProfileScreen({super.key});
@@ -191,7 +192,7 @@ class WorkerProfileScreen extends ConsumerWidget {
           ),
         );
       },
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () => const Scaffold(body: Center(child: CustomLoadingIndicator())),
       error: (error, _) => Scaffold(body: Center(child: SelectableText('Error: $error'))),
     );
   }
@@ -285,3 +286,5 @@ class _DetailRow extends StatelessWidget {
     );
   }
 }
+
+

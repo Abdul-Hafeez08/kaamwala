@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/worker_provider.dart';
 import 'worker_job_requests_screen.dart';
@@ -8,6 +8,8 @@ import 'worker_earnings_screen.dart';
 import 'worker_profile_screen.dart';
 import '../chat/chat_list_screen.dart';
 import '../../providers/chat_provider.dart';
+import '../widgets/curved_bottom_nav.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class WorkerDashboardScreen extends ConsumerStatefulWidget {
   const WorkerDashboardScreen({super.key});
@@ -29,38 +31,18 @@ class _WorkerDashboardScreenState extends ConsumerState<WorkerDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       body: _screens[_currentTabIndex],
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentTabIndex,
-          onTap: (index) => setState(() => _currentTabIndex = index),
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: const Color(0xFFFF9800),
-          unselectedItemColor: Colors.grey.withOpacity(0.5),
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
-          backgroundColor: isDark ? const Color(0xFF0A0A0A) : Colors.white,
-          elevation: 0,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.dashboard_rounded), activeIcon: Icon(Icons.dashboard_rounded), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.assignment_rounded), activeIcon: Icon(Icons.assignment_rounded), label: 'Requests'),
-            BottomNavigationBarItem(icon: Icon(Icons.work_rounded), activeIcon: Icon(Icons.work_rounded), label: 'Active'),
-            BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet_rounded), activeIcon: Icon(Icons.account_balance_wallet_rounded), label: 'Earnings'),
-            BottomNavigationBarItem(icon: Icon(Icons.person_rounded), activeIcon: Icon(Icons.person_rounded), label: 'Profile'),
-          ],
-        ),
+      bottomNavigationBar: CurvedBottomNavBar(
+        currentIndex: _currentTabIndex,
+        onTap: (index) => setState(() => _currentTabIndex = index),
+        items: const [
+          CurvedNavItem(icon: Icons.dashboard_outlined, activeIcon: Icons.dashboard_rounded, label: 'Home'),
+          CurvedNavItem(icon: Icons.assignment_outlined, activeIcon: Icons.assignment_rounded, label: 'Requests'),
+          CurvedNavItem(icon: Icons.work_outline_rounded, activeIcon: Icons.work_rounded, label: 'Active'),
+          CurvedNavItem(icon: Icons.account_balance_wallet_outlined, activeIcon: Icons.account_balance_wallet_rounded, label: 'Earnings'),
+          CurvedNavItem(icon: Icons.person_outline_rounded, activeIcon: Icons.person_rounded, label: 'Profile'),
+        ],
       ),
     );
   }
@@ -219,7 +201,7 @@ class _DashboardHome extends ConsumerWidget {
           ),
         );
       },
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () => const Scaffold(body: Center(child: CustomLoadingIndicator())),
       error: (error, _) => Scaffold(body: Center(child: SelectableText('Error: $error'))),
     );
   }
@@ -319,3 +301,5 @@ class _QuickLinkTile extends StatelessWidget {
     );
   }
 }
+
+

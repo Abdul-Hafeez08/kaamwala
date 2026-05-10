@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../providers/worker_provider.dart';
 import '../../controllers/worker_controller.dart';
+import '../widgets/job_detail_screen.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class WorkerJobRequestsScreen extends ConsumerWidget {
   const WorkerJobRequestsScreen({super.key});
@@ -57,157 +59,115 @@ class WorkerJobRequestsScreen extends ConsumerWidget {
                 itemCount: pendingJobs.length,
                 itemBuilder: (context, index) {
                   final job = pendingJobs[index];
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => JobDetailScreen(job: job, isAdmin: false),
                         ),
-                      ],
-                      border: Border.all(
-                        color: isDark ? Colors.white10 : Colors.black.withOpacity(0.03),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                        border: Border.all(
+                          color: isDark ? Colors.white10 : Colors.black.withOpacity(0.03),
+                        ),
                       ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFFF9800).withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(15),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFFF9800).withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: const Icon(Icons.person_rounded, color: Color(0xFFFF9800)),
                                 ),
-                                child: const Icon(Icons.person_rounded, color: Color(0xFFFF9800)),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        job.userName.isNotEmpty ? job.userName : 'Customer',
+                                        style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        'Requested ${job.serviceType}',
+                                        style: const TextStyle(
+                                          color: Color(0xFFFF9800),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      job.userName.isNotEmpty ? job.userName : 'Customer',
-                                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
+                                      DateFormat('MMM dd').format(job.scheduledDate),
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                                     ),
-                                    const SizedBox(height: 2),
                                     Text(
-                                      DateFormat('EEEE, MMM dd').format(job.scheduledDate),
-                                      style: TextStyle(color: isDark ? Colors.white38 : Colors.black38, fontSize: 12),
+                                      job.scheduledTime,
+                                      style: TextStyle(color: isDark ? Colors.white38 : Colors.black38, fontSize: 11),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            if (job.description.isNotEmpty) ...[
+                              const SizedBox(height: 16),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.message_rounded, size: 14, color: isDark ? Colors.white38 : Colors.black38),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        job.description,
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: isDark ? Colors.white70 : Colors.black87,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFFF9800).withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  job.scheduledTime,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 13,
-                                    color: Color(0xFFFF9800),
-                                  ),
-                                ),
-                              ),
                             ],
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            child: Divider(height: 1),
-                          ),
-                          Row(
-                            children: [
-                              const Icon(Icons.location_on_rounded, size: 16, color: Color(0xFFFF9800)),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  job.address.isNotEmpty ? job.address : job.location,
-                                  style: TextStyle(
-                                    color: isDark ? Colors.white70 : Colors.black87,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                          if (job.description.isNotEmpty) ...[
-                            const SizedBox(height: 16),
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'PROBLEM DESCRIPTION',
-                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 0.5),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    job.description,
-                                    style: TextStyle(fontSize: 14, color: isDark ? Colors.white70 : Colors.black87),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
-                          const SizedBox(height: 24),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextButton(
-                                  onPressed: () {
-                                    WorkerController().updateJobStatus(job.jobId, 'cancelled');
-                                  },
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: Colors.red,
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                      side: const BorderSide(color: Colors.red, width: 1),
-                                    ),
-                                  ),
-                                  child: const Text('Reject Job', style: TextStyle(fontWeight: FontWeight.bold)),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    WorkerController().updateJobStatus(job.jobId, 'accepted');
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFFF9800),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                    elevation: 0,
-                                  ),
-                                  child: const Text('Accept Job', style: TextStyle(fontWeight: FontWeight.bold)),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   );
@@ -216,7 +176,7 @@ class WorkerJobRequestsScreen extends ConsumerWidget {
             ),
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CustomLoadingIndicator()),
         error: (err, _) => Center(child: SelectableText('Error: $err')),
       ),
     );

@@ -43,6 +43,10 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryOrange,
           foregroundColor: white,
+          overlayColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          splashFactory: NoSplash.splashFactory,
           elevation: 0,
           minimumSize: const Size(double.infinity, 54),
           shape: RoundedRectangleBorder(
@@ -114,6 +118,10 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryOrange,
           foregroundColor: black,
+          overlayColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          splashFactory: NoSplash.splashFactory,
           elevation: 0,
           minimumSize: const Size(double.infinity, 54),
           shape: RoundedRectangleBorder(

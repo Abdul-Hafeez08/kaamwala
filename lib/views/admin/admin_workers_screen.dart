@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/admin_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/user_model.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class AdminWorkersScreen extends ConsumerStatefulWidget {
   const AdminWorkersScreen({super.key});
@@ -17,7 +18,7 @@ class _AdminWorkersScreenState extends ConsumerState<AdminWorkersScreen> with Si
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -38,6 +39,7 @@ class _AdminWorkersScreenState extends ConsumerState<AdminWorkersScreen> with Si
       
       ref.invalidate(workersByStatusProvider('approved'));
       ref.invalidate(workersByStatusProvider('pending'));
+      ref.invalidate(workersByStatusProvider('rejected'));
       ref.invalidate(allWorkersProvider);
     } catch (e) {
       if (!mounted) return;
@@ -65,6 +67,7 @@ class _AdminWorkersScreenState extends ConsumerState<AdminWorkersScreen> with Si
           tabs: const [
             Tab(text: 'Approved'),
             Tab(text: 'Pending'),
+            Tab(text: 'Rejected'),
           ],
         ),
       ),
@@ -80,6 +83,12 @@ class _AdminWorkersScreenState extends ConsumerState<AdminWorkersScreen> with Si
           
           _WorkerList(
             status: 'pending',
+            onAction: (workerId) => _updateWorkerStatus(workerId, 'approved'),
+            actionLabel: 'Approve',
+            actionColor: Colors.green,
+          ),
+          _WorkerList(
+            status: 'rejected',
             onAction: (workerId) => _updateWorkerStatus(workerId, 'approved'),
             actionLabel: 'Approve',
             actionColor: Colors.green,
@@ -182,7 +191,7 @@ class _WorkerList extends ConsumerWidget {
                                 color: Color(0xFF2E7D32),
                               ),
                             ),
-                            loading: () => const CircularProgressIndicator(),
+                            loading: () => const CustomLoadingIndicator(),
                             error: (err, _) => Text('Error: $err'),
                           ),
                         ],
@@ -207,6 +216,10 @@ class _WorkerList extends ConsumerWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: actionColor,
                 foregroundColor: Colors.white,
+                overlayColor: Colors.transparent,
+                surfaceTintColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                splashFactory: NoSplash.splashFactory,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 elevation: 0,
               ),
@@ -352,8 +365,12 @@ class _WorkerList extends ConsumerWidget {
                           child: ElevatedButton(
                             onPressed: () => onAction(worker.workerId),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: actionColor.withOpacity(0.1),
+                              backgroundColor: actionColor.withValues(alpha: 0.1),
                               foregroundColor: actionColor,
+                              overlayColor: Colors.transparent,
+                              surfaceTintColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              splashFactory: NoSplash.splashFactory,
                               elevation: 0,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -372,7 +389,7 @@ class _WorkerList extends ConsumerWidget {
             },
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CustomLoadingIndicator()),
         error: (err, stack) => Center(
           child: SelectableText('Error: $err', style: const TextStyle(color: Colors.red)),
         ),
@@ -444,3 +461,5 @@ class _DetailRow extends StatelessWidget {
     );
   }
 }
+
+

@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../models/service_model.dart';
 import '../chat/chat_list_screen.dart';
 import 'worker_list_screen.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class UserHomeScreen extends ConsumerStatefulWidget {
   const UserHomeScreen({super.key});
@@ -285,7 +286,7 @@ class _UserHomeScreenState extends ConsumerState<UserHomeScreen> {
                   );
                 },
                 loading: () => const SliverToBoxAdapter(
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(child: const CustomLoadingIndicator()),
                 ),
                 error: (err, _) => SliverToBoxAdapter(
                   child: Center(child: Text('Error: $err')),
@@ -365,3 +366,4 @@ class _ServiceCard extends StatelessWidget {
     );
   }
 }
+

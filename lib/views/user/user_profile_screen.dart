@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/user_provider.dart';
 import '../auth/login_screen.dart';
 import 'user_edit_profile_screen.dart';
+import 'user_complaint_screen.dart';
 import '../widgets/custom_button.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class UserProfileScreen extends ConsumerWidget {
   const UserProfileScreen({super.key});
@@ -140,6 +142,19 @@ class UserProfileScreen extends ConsumerWidget {
                       onTap: () {},
                     ),
                     _SettingsTile(
+                      icon: Icons.support_agent_rounded,
+                      title: 'Help & Complaints',
+                      subtitle: 'Submit a ticket',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => UserComplaintScreen(user: user),
+                          ),
+                        );
+                      },
+                    ),
+                    _SettingsTile(
                       icon: Icons.security_rounded,
                       title: 'Security',
                       subtitle: 'Password and privacy',
@@ -162,7 +177,7 @@ class UserProfileScreen extends ConsumerWidget {
             ),
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CustomLoadingIndicator()),
         error: (err, _) => Center(child: Text('Error: $err')),
       ),
     );
@@ -274,3 +289,5 @@ class _SettingsTile extends StatelessWidget {
     );
   }
 }
+
+

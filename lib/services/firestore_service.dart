@@ -5,6 +5,7 @@ import '../models/service_model.dart';
 import '../models/review_model.dart';
 import '../models/chat_model.dart';
 import '../models/message_model.dart';
+import '../models/complaint_model.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -354,6 +355,32 @@ class FirestoreService {
       final messages = snapshot.docs.map((doc) => MessageModel.fromMap(doc.data(), doc.id)).toList();
       messages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return messages;
+    });
+  }
+  // --- Complaints Methods ---
+
+  Future<void> createComplaint(ComplaintModel complaint) async {
+    final docRef = _firestore.collection('complaints').doc();
+    final complaintData = complaint.toMap();
+    complaintData['complaintId'] = docRef.id;
+    await docRef.set(complaintData);
+  }
+
+  Stream<List<ComplaintModel>> streamAllComplaints() {
+    return _firestore
+        .collection('complaints')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => ComplaintModel.fromMap(doc.data(), doc.id))
+          .toList();
+    });
+  }
+
+  Future<void> updateComplaintStatus(String complaintId, String status) async {
+    await _firestore.collection('complaints').doc(complaintId).update({
+      'status': status,
     });
   }
 }

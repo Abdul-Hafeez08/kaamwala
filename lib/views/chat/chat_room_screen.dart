@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../providers/chat_provider.dart';
 import '../../controllers/chat_controller.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class ChatRoomScreen extends ConsumerStatefulWidget {
   final String chatId;
@@ -115,7 +116,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                       children: [
                         Icon(Icons.waving_hand_rounded, size: 48, color: const Color(0xFFFF9800).withOpacity(0.3)),
                         const SizedBox(height: 16),
-                        const Text('Say hi! 👋', style: TextStyle(fontWeight: FontWeight.bold)),
+                        const Text('Say hi! ðŸ‘‹', style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   );
@@ -178,7 +179,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                   },
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(child: CustomLoadingIndicator()),
               error: (err, _) => Center(child: SelectableText('Error: $err')),
             ),
           ),
@@ -237,3 +238,5 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     );
   }
 }
+
+

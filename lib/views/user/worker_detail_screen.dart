@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/user_model.dart';
 import '../../models/review_model.dart';
 import '../../providers/user_provider.dart';
 import 'booking_screen.dart';
 import '../widgets/custom_button.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class WorkerDetailScreen extends ConsumerWidget {
   final WorkerModel worker;
@@ -126,13 +127,7 @@ class WorkerDetailScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  _StatBox(
-                    label: 'Service Location',
-                    value: worker.location.isEmpty ? 'N/A' : worker.location,
-                    icon: Icons.location_on_rounded,
-                    maxLines: 1,
-                  ),
+
                   const SizedBox(height: 32),
                   const Text(
                     'Contact Information',
@@ -184,6 +179,20 @@ class WorkerDetailScreen extends ConsumerWidget {
                       height: 1.5,
                     ),
                   ),
+                  const SizedBox(height: 32),
+                  const Text(
+                    'Service Location',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    worker.location.isEmpty ? 'N/A' : worker.location,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: isDark ? Colors.white70 : Colors.black87,
+                      height: 1.5,
+                    ),
+                  ),
                   const SizedBox(height: 40),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -226,7 +235,7 @@ class WorkerDetailScreen extends ConsumerWidget {
                         itemBuilder: (context, index) => _ReviewCard(review: reviews[index]),
                       );
                     },
-                    loading: () => const Center(child: CircularProgressIndicator()),
+                    loading: () => const Center(child: CustomLoadingIndicator()),
                     error: (err, _) => Text('Error loading reviews: $err'),
                   ),
                   const SizedBox(height: 100),
@@ -395,3 +404,5 @@ class _ReviewCard extends StatelessWidget {
     );
   }
 }
+
+

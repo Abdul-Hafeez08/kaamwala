@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/user_provider.dart';
 import '../../models/user_model.dart';
 import 'worker_detail_screen.dart';
 import '../../services/firestore_service.dart';
 import '../chat/chat_room_screen.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class WorkerListScreen extends ConsumerWidget {
   final String serviceType;
@@ -82,7 +83,7 @@ class WorkerListScreen extends ConsumerWidget {
               },
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const Center(child: CustomLoadingIndicator()),
           error: (err, _) => Center(
             child: Text('Error: $err',
                 style: const TextStyle(color: Colors.red)),
@@ -267,7 +268,7 @@ class _WorkerCard extends ConsumerWidget {
                       showDialog(
                         context: context,
                         barrierDismissible: false,
-                        builder: (ctx) => const Center(child: CircularProgressIndicator()),
+                        builder: (ctx) => const Center(child: CustomLoadingIndicator()),
                       );
 
                       try {
@@ -309,3 +310,5 @@ class _WorkerCard extends ConsumerWidget {
     );
   }
 }
+
+

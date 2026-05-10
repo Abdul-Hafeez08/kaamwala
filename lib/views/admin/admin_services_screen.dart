@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/admin_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/service_model.dart';
+import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class AdminServicesScreen extends ConsumerStatefulWidget {
   const AdminServicesScreen({super.key});
@@ -113,7 +114,7 @@ class _AdminServicesScreenState extends ConsumerState<AdminServicesScreen> {
               },
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const Center(child: CustomLoadingIndicator()),
           error: (err, stack) => Center(
             child: SelectableText('Error: $err', style: const TextStyle(color: Colors.red)),
           ),
@@ -205,6 +206,8 @@ class _AdminServicesScreenState extends ConsumerState<AdminServicesScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF9800),
                 foregroundColor: Colors.white,
+                overlayColor: Colors.white.withValues(alpha: 0.15),
+                surfaceTintColor: Colors.transparent,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               child: const Text('Add Service', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -256,3 +259,5 @@ class _AdminServicesScreenState extends ConsumerState<AdminServicesScreen> {
     }
   }
 }
+
+

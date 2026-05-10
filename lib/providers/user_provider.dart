@@ -30,6 +30,11 @@ final workersByServiceProvider =
   return await firestoreService.getApprovedWorkersByService(serviceType);
 });
 
+final allApprovedWorkersProvider = FutureProvider<List<WorkerModel>>((ref) async {
+  final firestoreService = ref.read(firestoreServiceProvider);
+  return await firestoreService.getWorkersByApprovalStatus('approved');
+});
+
 final userBookingsStreamProvider = StreamProvider<List<JobModel>>((ref) {
   final authState = ref.watch(authStateProvider);
 
