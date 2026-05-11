@@ -13,6 +13,7 @@ class AuthController {
     required String phone,
     required String password,
     required String role,
+    String profileImage = '',
   }) async {
     final User? firebaseUser = await _authService.signUpWithEmail(
       email: email,
@@ -31,6 +32,7 @@ class AuthController {
       email: email,
       phone: phone,
       role: role,
+      profileImage: profileImage,
     );
     await _firestoreService.createUserDocument(userModel);
 
@@ -40,6 +42,7 @@ class AuthController {
         name: name,
         email: email,
         phone: phone,
+        profileImage: profileImage,
         approvalStatus: 'pending',
       );
       await _firestoreService.createWorkerDocument(workerModel);

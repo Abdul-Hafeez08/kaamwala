@@ -113,7 +113,7 @@ class _NavItemWidget extends StatelessWidget {
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: selectedColor.withValues(alpha: 0.4),
+                          color: selectedColor.withOpacity(0.4),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),

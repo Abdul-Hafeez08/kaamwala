@@ -61,7 +61,7 @@ class _CustomLoadingIndicatorState extends State<CustomLoadingIndicator>
                         width: widget.size * 0.4,
                         height: widget.size * 0.4,
                         decoration: BoxDecoration(
-                          color: themeColor.withValues(alpha: 0.2),
+                          color: themeColor.withOpacity(0.2),
                           shape: BoxShape.circle,
                         ),
                         child: Center(
@@ -73,7 +73,7 @@ class _CustomLoadingIndicatorState extends State<CustomLoadingIndicator>
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: themeColor.withValues(alpha: 0.5),
+                                  color: themeColor.withOpacity(0.5),
                                   blurRadius: 10,
                                   spreadRadius: 2,
                                 ),
@@ -95,7 +95,7 @@ class _CustomLoadingIndicatorState extends State<CustomLoadingIndicator>
                       angle: -_controller.value * 2 * math.pi,
                       child: CustomPaint(
                         painter: _ArcPainter(
-                          color: themeColor.withValues(alpha: 0.5),
+                          color: themeColor.withOpacity(0.5),
                           isInner: true,
                         ),
                         size: Size(widget.size * 0.7, widget.size * 0.7),

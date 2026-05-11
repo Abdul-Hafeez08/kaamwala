@@ -143,6 +143,10 @@ class FirestoreService {
     final docRef = _firestore.collection('jobs').doc();
     final jobData = job.toMap();
     jobData['jobId'] = docRef.id;
+    // If it's a general request, set status to 'open' instead of 'pending'
+    if (job.isGeneralRequest) {
+      jobData['status'] = 'open';
+    }
     await docRef.set(jobData);
     return docRef.id;
   }
@@ -179,6 +183,20 @@ class FirestoreService {
     return _firestore
         .collection('jobs')
         .where('workerId', isEqualTo: workerId)
+        .snapshots()
+        .map((snapshot) {
+      final jobs = snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList();
+      jobs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return jobs;
+    });
+  }
+
+  Stream<List<JobModel>> streamOpenJobsByCategory(String serviceType) {
+    return _firestore
+        .collection('jobs')
+        .where('isGeneralRequest', isEqualTo: true)
+        .where('status', isEqualTo: 'open')
+        .where('serviceType', isEqualTo: serviceType)
         .snapshots()
         .map((snapshot) {
       final jobs = snapshot.docs.map((doc) => JobModel.fromMap(doc.data())).toList();

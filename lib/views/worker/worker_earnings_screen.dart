@@ -54,7 +54,7 @@ class WorkerEarningsScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.green.withValues(alpha: 0.3),
+                              color: Colors.green.withOpacity(0.3),
                               blurRadius: 15,
                               offset: const Offset(0, 8),
                             ),
@@ -92,7 +92,7 @@ class WorkerEarningsScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.blue.withValues(alpha: 0.3),
+                              color: Colors.blue.withOpacity(0.3),
                               blurRadius: 15,
                               offset: const Offset(0, 8),
                             ),
@@ -135,7 +135,7 @@ class WorkerEarningsScreen extends ConsumerWidget {
                         Container(
                           padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
-                            color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05),
+                            color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -189,11 +189,11 @@ class WorkerEarningsScreen extends ConsumerWidget {
                                 color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
-                                  color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.03),
+                                  color: isDark ? Colors.white10 : Colors.black.withOpacity(0.03),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.02),
+                                    color: Colors.black.withOpacity(0.02),
                                     blurRadius: 10,
                                     offset: const Offset(0, 4),
                                   ),
@@ -204,7 +204,7 @@ class WorkerEarningsScreen extends ConsumerWidget {
                                   Container(
                                     padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                      color: Colors.green.withValues(alpha: 0.1),
+                                      color: Colors.green.withOpacity(0.1),
                                       shape: BoxShape.circle,
                                     ),
                                     child: const Icon(Icons.add_rounded, color: Colors.green, size: 20),
@@ -225,13 +225,34 @@ class WorkerEarningsScreen extends ConsumerWidget {
                                       ],
                                     ),
                                   ),
-                                  Text(
-                                    '+Rs. ${job.price.toStringAsFixed(0)}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 16,
-                                      color: Colors.green,
-                                    ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '+Rs. ${job.price.toStringAsFixed(0)}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 16,
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Fee (20%): -Rs. ${(job.price * 0.2).toStringAsFixed(0)}',
+                                        style: TextStyle(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                          color: isDark ? Colors.white24 : Colors.black26,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Net: Rs. ${(job.price * 0.8).toStringAsFixed(0)}',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w900,
+                                          color: isDark ? Colors.white70 : Colors.black87,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

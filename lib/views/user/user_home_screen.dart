@@ -1,10 +1,11 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/user_provider.dart';
 import '../../models/service_model.dart';
 import '../chat/chat_list_screen.dart';
 import 'worker_list_screen.dart';
+import 'general_post_screen.dart';
 import 'package:kaamwala/views/widgets/custom_loading_indicator.dart';
 
 class UserHomeScreen extends ConsumerStatefulWidget {
@@ -40,29 +41,38 @@ class _UserHomeScreenState extends ConsumerState<UserHomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          const Text(
-                            'Kaamwala',
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFFFF9800),
-                              letterSpacing: -1,
-                            ),
+                          IconButton(
+                            icon: const Icon(Icons.menu_rounded, color: Color(0xFFFF9800)),
+                            onPressed: () => Scaffold.of(context).openDrawer(),
                           ),
-                          userAsync.when(
-                            data: (user) => Text(
-                              '${_getGreeting()}, ${user?.name.split(' ')[0] ?? 'User'}',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: isDark ? Colors.white60 : Colors.black54,
-                                fontWeight: FontWeight.w500,
+                          const SizedBox(width: 4),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Kaamwala',
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFFFF9800),
+                                  letterSpacing: -1,
+                                ),
                               ),
-                            ),
-                            loading: () => const SizedBox(height: 14),
-                            error: (_, __) => const Text('Hello!'),
+                              userAsync.when(
+                                data: (user) => Text(
+                                  '${_getGreeting()}, ${user?.name.split(' ')[0] ?? 'User'}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: isDark ? Colors.white60 : Colors.black54,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                loading: () => const SizedBox(height: 14),
+                                error: (_, __) => const Text('Hello!'),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -141,69 +151,81 @@ class _UserHomeScreenState extends ConsumerState<UserHomeScreen> {
                 ),
               ),
 
-              // Promo Banner (Mock)
+              const SliverToBoxAdapter(child: SizedBox(height: 10)),
+
+              // Marketplace Section
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
                   child: Container(
-                    constraints: const BoxConstraints(minHeight: 160),
-                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFFFF9800), Color(0xFFFFB74D)],
+                        colors: [Color(0xFF009688), Color(0xFF4DB6AC)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          right: -20,
-                          bottom: -20,
-                          child: Icon(
-                            Icons.handyman_rounded,
-                            size: 150,
-                            color: Colors.white.withOpacity(0.2),
-                          ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF009688).withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                '20% OFF',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              const Text(
-                                'on your first booking',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: const Color(0xFFFF9800),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Job Marketplace',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  elevation: 0,
                                 ),
-                                child: const Text('Book Now'),
+                                Text(
+                                  'Post to all experts at once',
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                shape: BoxShape.circle,
                               ),
-                            ],
+                              child: const Icon(Icons.rocket_launch_rounded, color: Colors.white, size: 28),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const GeneralPostScreen()),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: const Color(0xFF009688),
+                            minimumSize: const Size(double.infinity, 48),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            elevation: 0,
                           ),
+                          child: const Text('Post General Request', style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ],
                     ),
@@ -286,7 +308,7 @@ class _UserHomeScreenState extends ConsumerState<UserHomeScreen> {
                   );
                 },
                 loading: () => const SliverToBoxAdapter(
-                  child: Center(child: const CustomLoadingIndicator()),
+                  child: Center(child: CustomLoadingIndicator()),
                 ),
                 error: (err, _) => SliverToBoxAdapter(
                   child: Center(child: Text('Error: $err')),
@@ -366,4 +388,3 @@ class _ServiceCard extends StatelessWidget {
     );
   }
 }
-

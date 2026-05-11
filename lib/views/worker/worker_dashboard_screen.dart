@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/worker_provider.dart';
 import 'worker_job_requests_screen.dart';
@@ -6,6 +6,7 @@ import 'worker_active_jobs_screen.dart';
 import 'worker_completed_jobs_screen.dart';
 import 'worker_earnings_screen.dart';
 import 'worker_profile_screen.dart';
+import 'find_jobs_screen.dart';
 import '../chat/chat_list_screen.dart';
 import '../../providers/chat_provider.dart';
 import '../widgets/curved_bottom_nav.dart';
@@ -23,6 +24,7 @@ class _WorkerDashboardScreenState extends ConsumerState<WorkerDashboardScreen> {
 
   final List<Widget> _screens = const [
     _DashboardHome(),
+    FindJobsScreen(),
     WorkerJobRequestsScreen(),
     WorkerActiveJobsScreen(),
     WorkerEarningsScreen(),
@@ -38,6 +40,7 @@ class _WorkerDashboardScreenState extends ConsumerState<WorkerDashboardScreen> {
         onTap: (index) => setState(() => _currentTabIndex = index),
         items: const [
           CurvedNavItem(icon: Icons.dashboard_outlined, activeIcon: Icons.dashboard_rounded, label: 'Home'),
+          CurvedNavItem(icon: Icons.search_rounded, activeIcon: Icons.manage_search_rounded, label: 'Find Jobs'),
           CurvedNavItem(icon: Icons.assignment_outlined, activeIcon: Icons.assignment_rounded, label: 'Requests'),
           CurvedNavItem(icon: Icons.work_outline_rounded, activeIcon: Icons.work_rounded, label: 'Active'),
           CurvedNavItem(icon: Icons.account_balance_wallet_outlined, activeIcon: Icons.account_balance_wallet_rounded, label: 'Earnings'),

@@ -18,6 +18,7 @@ class BookingController {
     required String workerImage,
     required DateTime scheduledDate,
     required String scheduledTime,
+    bool isGeneralRequest = false,
   }) async {
     final job = JobModel(
       jobId: '',
@@ -33,7 +34,8 @@ class BookingController {
       workerImage: workerImage,
       scheduledDate: scheduledDate,
       scheduledTime: scheduledTime,
-      status: 'pending',
+      status: isGeneralRequest ? 'open' : 'pending',
+      isGeneralRequest: isGeneralRequest,
     );
 
     return await _firestoreService.createJob(job);

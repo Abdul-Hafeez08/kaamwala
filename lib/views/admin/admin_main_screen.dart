@@ -82,7 +82,7 @@ class _AdminMainScreenState extends ConsumerState<AdminMainScreen> {
                     padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 2),
+                      border: Border.all(color: Colors.white.withOpacity(0.5), width: 2),
                     ),
                     child: const CircleAvatar(
                       radius: 32,
@@ -105,7 +105,7 @@ class _AdminMainScreenState extends ConsumerState<AdminMainScreen> {
                       user?.email ?? 'admin@kaamwala.com',
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.8),
+                        color: Colors.white.withOpacity(0.8),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -113,14 +113,14 @@ class _AdminMainScreenState extends ConsumerState<AdminMainScreen> {
                       'Loading...',
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.6),
+                        color: Colors.white.withOpacity(0.6),
                       ),
                     ),
                     error: (_, __) => Text(
                       'admin@kaamwala.com',
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.white.withValues(alpha: 0.8),
+                        color: Colors.white.withOpacity(0.8),
                       ),
                     ),
                   ),
@@ -160,9 +160,9 @@ class _AdminMainScreenState extends ConsumerState<AdminMainScreen> {
                   icon: const Icon(Icons.logout_rounded, size: 20),
                   label: const Text('Logout', style: TextStyle(fontWeight: FontWeight.w900)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.withValues(alpha: 0.1),
+                    backgroundColor: Colors.red.withOpacity(0.1),
                     foregroundColor: Colors.red,
-                    overlayColor: Colors.red.withValues(alpha: 0.15),
+                    overlayColor: Colors.red.withOpacity(0.15),
                     surfaceTintColor: Colors.transparent,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(vertical: 14),
@@ -218,7 +218,7 @@ class _DrawerItem extends StatelessWidget {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: const Color(0xFFFF9800).withValues(alpha: 0.1),
+          color: const Color(0xFFFF9800).withOpacity(0.1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(icon, color: const Color(0xFFFF9800), size: 22),

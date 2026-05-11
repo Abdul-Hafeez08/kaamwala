@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/user_provider.dart';
@@ -19,6 +19,10 @@ class UserProfileScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Profile'),
+        leading: IconButton(
+          icon: const Icon(Icons.menu_rounded),
+          onPressed: () => Scaffold.of(context).openDrawer(),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),

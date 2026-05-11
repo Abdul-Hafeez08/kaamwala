@@ -30,10 +30,10 @@ class WorkerActiveJobsScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(32),
                     decoration: BoxDecoration(
-                      color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05),
+                      color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.work_rounded, size: 60, color: Colors.grey.withValues(alpha: 0.5)),
+                    child: Icon(Icons.work_rounded, size: 60, color: Colors.grey.withOpacity(0.5)),
                   ),
                   const SizedBox(height: 24),
                   const Text(
@@ -81,15 +81,15 @@ class WorkerActiveJobsScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(24),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.04),
+                                color: Colors.black.withOpacity(0.04),
                                 blurRadius: 10,
                                 offset: const Offset(0, 5),
                               ),
                             ],
                             border: Border.all(
                               color: isWorking 
-                                  ? const Color(0xFFFF9800).withValues(alpha: 0.3) 
-                                  : (isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.03)),
+                                  ? const Color(0xFFFF9800).withOpacity(0.3) 
+                                  : (isDark ? Colors.white10 : Colors.black.withOpacity(0.03)),
                             ),
                           ),
                           child: Padding(
@@ -103,7 +103,7 @@ class WorkerActiveJobsScreen extends ConsumerWidget {
                                       width: 50,
                                       height: 50,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFFF9800).withValues(alpha: 0.1),
+                                        color: const Color(0xFFFF9800).withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                       child: const Icon(Icons.person_rounded, color: Color(0xFFFF9800)),
@@ -128,7 +128,7 @@ class WorkerActiveJobsScreen extends ConsumerWidget {
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                       decoration: BoxDecoration(
-                                        color: isWorking ? Colors.green.withValues(alpha: 0.1) : Colors.blue.withValues(alpha: 0.1),
+                                        color: isWorking ? Colors.green.withOpacity(0.1) : Colors.blue.withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
@@ -225,7 +225,7 @@ class WorkerActiveJobsScreen extends ConsumerWidget {
                   labelText: 'Amount (Rs.)',
                   prefixIcon: const Icon(Icons.payments_rounded, color: Color(0xFFFF9800)),
                   filled: true,
-                  fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
+                  fillColor: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                 ),
               ),

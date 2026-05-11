@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../providers/admin_provider.dart';
 import '../../models/user_model.dart';
+import '../widgets/custom_loading_indicator.dart';
 
 class AdminDashboardScreen extends ConsumerWidget {
   const AdminDashboardScreen({super.key});
@@ -52,6 +53,102 @@ class AdminDashboardScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 32),
                 
+                // 1. Platform Earnings Card (At Top)
+                Consumer(
+                  builder: (context, ref, child) {
+                    final adminEarningsAsync = ref.watch(totalAdminEarningsProvider);
+                    final platformVolumeAsync = ref.watch(totalPlatformVolumeProvider);
+                    final monthJobsAsync = ref.watch(currentMonthJobsCountProvider);
+                    
+                    return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: isDark 
+                            ? [const Color(0xFF1E1E1E), const Color(0xFF121212)] 
+                            : [const Color(0xFF2E7D32), const Color(0xFF4CAF50)], // Green for earnings
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: (isDark ? Colors.black : const Color(0xFF2E7D32)).withOpacity(0.2),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Total Admin Profit',
+                                    style: TextStyle(
+                                      fontSize: 18, 
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    'From 20% Service Fee',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.white.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Icon(Icons.account_balance_wallet_rounded, color: Colors.white, size: 32),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          Row(
+                            children: [
+                              _buildQuickStat(
+                                adminEarningsAsync.when(
+                                  data: (earnings) => 'Rs. ${earnings.toStringAsFixed(0)}',
+                                  loading: () => '...',
+                                  error: (_, __) => 'N/A',
+                                ),
+                                'Total Earnings',
+                              ),
+                              const SizedBox(width: 32),
+                              _buildQuickStat(
+                                platformVolumeAsync.when(
+                                  data: (volume) => 'Rs. ${volume.toStringAsFixed(0)}',
+                                  loading: () => '...',
+                                  error: (_, __) => 'N/A',
+                                ),
+                                'Total Volume',
+                              ),
+                              const SizedBox(width: 32),
+                              _buildQuickStat(
+                                monthJobsAsync.when(
+                                  data: (count) => count.toString(),
+                                  loading: () => '...',
+                                  error: (_, __) => 'N/A',
+                                ),
+                                'Jobs Done',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                
+                const SizedBox(height: 32),
+                
+                // 2. Platform Stats List
                 Column(
                   children: [
                     _buildStatCard(
@@ -82,106 +179,10 @@ class AdminDashboardScreen extends ConsumerWidget {
                       context: context,
                       title: 'Active Jobs',
                       icon: Icons.play_circle_filled_rounded,
-                      color: Colors.green,
+                      color: Colors.orange,
                       valueAsync: pendingJobsAsync.whenData((jobs) => jobs.length.toString()),
                     ),
                   ],
-                ),
-                
-                const SizedBox(height: 32),
-                
-                // Current Month Income Section
-                Consumer(
-                  builder: (context, ref, child) {
-                    final monthIncomeAsync = ref.watch(currentMonthIncomeProvider);
-                    final monthJobsAsync = ref.watch(currentMonthJobsCountProvider);
-                    final approvedWorkersAsync = ref.watch(workersByStatusProvider('approved'));
-                    final currentMonth = DateFormat('MMMM yyyy').format(DateTime.now());
-
-                    return Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: isDark 
-                            ? [const Color(0xFF1E1E1E), const Color(0xFF121212)] 
-                            : [const Color(0xFFFF9800), const Color(0xFFFFB74D)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(24),
-                        boxShadow: [
-                          BoxShadow(
-                            color: (isDark ? Colors.black : const Color(0xFFFF9800)).withOpacity(0.2),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Monthly Revenue',
-                                    style: TextStyle(
-                                      fontSize: 18, 
-                                      fontWeight: FontWeight.bold,
-                                      color: isDark ? Colors.white : Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    currentMonth,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: isDark ? Colors.white38 : Colors.white.withOpacity(0.8),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Icon(Icons.trending_up_rounded, color: Colors.white.withOpacity(0.8), size: 32),
-                            ],
-                          ),
-                          const SizedBox(height: 24),
-                          Row(
-                            children: [
-                              _buildQuickStat(
-                                monthIncomeAsync.when(
-                                  data: (income) => 'Rs. ${income.toStringAsFixed(0)}',
-                                  loading: () => '...',
-                                  error: (_, __) => 'N/A',
-                                ),
-                                'Income',
-                              ),
-                              const SizedBox(width: 24),
-                              _buildQuickStat(
-                                monthJobsAsync.when(
-                                  data: (count) => count.toString(),
-                                  loading: () => '...',
-                                  error: (_, __) => 'N/A',
-                                ),
-                                'Jobs Done',
-                              ),
-                              const SizedBox(width: 24),
-                              _buildQuickStat(
-                                approvedWorkersAsync.when(
-                                  data: (workers) => workers.length.toString(),
-                                  loading: () => '...',
-                                  error: (_, __) => 'N/A',
-                                ),
-                                'Active Workers',
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
                 ),
               ],
             ),
@@ -253,7 +254,7 @@ class AdminDashboardScreen extends ConsumerWidget {
                   loading: () => const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CustomLoadingIndicator(size: 20),
                   ),
                   error: (error, _) => const Text('!', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
                 ),

@@ -68,3 +68,19 @@ final currentMonthJobsCountProvider = FutureProvider<int>((ref) async {
           j.completedAt!.year == now.year)
       .length;
 });
+
+final totalAdminEarningsProvider = FutureProvider<double>((ref) async {
+  final firestoreService = ref.read(firestoreServiceProvider);
+  final allJobs = await firestoreService.getAllJobs();
+  return allJobs
+      .where((j) => (j.status == 'completed' || j.status == 'reviewed') && j.price > 0)
+      .fold<double>(0.0, (sum, job) => sum + (job.price * 0.20));
+});
+
+final totalPlatformVolumeProvider = FutureProvider<double>((ref) async {
+  final firestoreService = ref.read(firestoreServiceProvider);
+  final allJobs = await firestoreService.getAllJobs();
+  return allJobs
+      .where((j) => (j.status == 'completed' || j.status == 'reviewed') && j.price > 0)
+      .fold<double>(0.0, (sum, job) => sum + job.price);
+});

@@ -30,15 +30,6 @@ class _UserMainScreenState extends ConsumerState<UserMainScreen> {
     final unreadCount = ref.watch(totalUnreadCountUserProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Kaamwala', style: TextStyle(fontWeight: FontWeight.w900)),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu_rounded),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-      ),
       drawer: const UserDrawer(),
       body: IndexedStack(
         index: _currentIndex,

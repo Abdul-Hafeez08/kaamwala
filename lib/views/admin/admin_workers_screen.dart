@@ -365,7 +365,7 @@ class _WorkerList extends ConsumerWidget {
                           child: ElevatedButton(
                             onPressed: () => onAction(worker.workerId),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: actionColor.withValues(alpha: 0.1),
+                              backgroundColor: actionColor.withOpacity(0.1),
                               foregroundColor: actionColor,
                               overlayColor: Colors.transparent,
                               surfaceTintColor: Colors.transparent,

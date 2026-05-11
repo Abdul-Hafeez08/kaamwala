@@ -1,7 +1,13 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../controllers/auth_controller.dart';
+import '../../services/cloudinary_service.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
+import '../widgets/custom_loading_indicator.dart';
 import 'login_screen.dart';
 import '../worker/worker_profile_setup_screen.dart';
 import '../user/user_main_screen.dart';
@@ -19,10 +25,19 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  
   final AuthController _authController = AuthController();
+  final CloudinaryService _cloudinaryService = CloudinaryService();
+  final ImagePicker _picker = ImagePicker();
 
-  String _selectedRole = 'worker';
+  String _selectedRole = 'user';
   bool _isLoading = false;
+  
+  // Image handling
+  String _profileImageUrl = '';
+  File? _mobileImageFile;
+  Uint8List? _webImageBytes;
+  bool _isUploadingImage = false;
 
   @override
   void dispose() {
@@ -31,6 +46,47 @@ class _SignupScreenState extends State<SignupScreen> {
     phoneController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final picked = await _picker.pickImage(
+        source: source,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 80,
+      );
+
+      if (picked != null) {
+        setState(() => _isUploadingImage = true);
+        
+        if (kIsWeb) {
+          final bytes = await picked.readAsBytes();
+          setState(() {
+            _webImageBytes = bytes;
+            _mobileImageFile = null;
+          });
+          final url = await _cloudinaryService.uploadImage(webBytes: bytes);
+          setState(() => _profileImageUrl = url);
+        } else {
+          final file = File(picked.path);
+          setState(() {
+            _mobileImageFile = file;
+            _webImageBytes = null;
+          });
+          final url = await _cloudinaryService.uploadImage(imageFile: file);
+          setState(() => _profileImageUrl = url);
+        }
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: SelectableText('Upload Error: $error')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isUploadingImage = false);
+    }
   }
 
   Future<void> _handleSignup() async {
@@ -45,6 +101,7 @@ class _SignupScreenState extends State<SignupScreen> {
         phone: phoneController.text.trim(),
         password: passwordController.text.trim(),
         role: _selectedRole,
+        profileImage: _profileImageUrl, // Pass the uploaded image URL
       );
 
       if (!mounted) return;
@@ -76,6 +133,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -86,26 +145,71 @@ class _SignupScreenState extends State<SignupScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.home_repair_service,
-                    size: 64,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  const SizedBox(height: 16),
                   Text(
                     'Create Account',
                     style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w900,
                       color: Theme.of(context).primaryColor,
+                      letterSpacing: -1,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Join Kaamwala today',
-                    style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                    'Join the Kaamwala community',
+                    style: TextStyle(fontSize: 16, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 32),
+
+                  // Profile Image Picker
+                  Center(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: const Color(0xFFFF9800), width: 2),
+                          ),
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundColor: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF8F8F8),
+                            backgroundImage: _isUploadingImage 
+                              ? null 
+                              : (_webImageBytes != null 
+                                  ? MemoryImage(_webImageBytes!) as ImageProvider
+                                  : (_mobileImageFile != null 
+                                      ? FileImage(_mobileImageFile!)
+                                      : (_profileImageUrl.isNotEmpty ? NetworkImage(_profileImageUrl) : null))),
+                            child: _isUploadingImage
+                                ? const CustomLoadingIndicator(size: 30)
+                                : (_profileImageUrl.isEmpty && _mobileImageFile == null && _webImageBytes == null
+                                    ? Icon(Icons.add_a_photo_rounded, size: 30, color: Colors.grey.shade400)
+                                    : null),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextButton.icon(
+                              onPressed: () => _pickImage(ImageSource.gallery),
+                              icon: const Icon(Icons.photo_library_rounded, size: 18),
+                              label: const Text('Gallery', style: TextStyle(fontSize: 12)),
+                              style: TextButton.styleFrom(foregroundColor: const Color(0xFFFF9800)),
+                            ),
+                            TextButton.icon(
+                              onPressed: () => _pickImage(ImageSource.camera),
+                              icon: const Icon(Icons.camera_alt_rounded, size: 18),
+                              label: const Text('Camera', style: TextStyle(fontSize: 12)),
+                              style: TextButton.styleFrom(foregroundColor: const Color(0xFFFF9800)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
 
                   CustomTextField(
                     controller: nameController,
@@ -134,11 +238,12 @@ class _SignupScreenState extends State<SignupScreen> {
                   CustomTextField(
                     controller: phoneController,
                     label: 'Phone Number',
-                    hintText: 'Enter your phone number',
+                    hintText: '03XXXXXXXXX',
                     prefixIcon: Icons.phone_outlined,
                     keyboardType: TextInputType.phone,
                     validator: (value) {
                       if (value == null || value.isEmpty) return 'Please enter your phone number';
+                      if (value.length != 11) return 'Phone number must be 11 digits';
                       return null;
                     },
                   ),
@@ -159,35 +264,36 @@ class _SignupScreenState extends State<SignupScreen> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: DropdownButtonFormField<String>(
-                      initialValue: _selectedRole,
+                      value: _selectedRole,
                       decoration: InputDecoration(
                         labelText: 'I am a',
                         prefixIcon: const Icon(Icons.badge_outlined),
                         filled: true,
-                        fillColor: Colors.grey.shade50,
+                        fillColor: isDark ? const Color(0xFF1E1E1E) : Colors.grey.shade50,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
                         ),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                       ),
+                      dropdownColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                       items: const [
-                        DropdownMenuItem(value: 'worker', child: Text('Worker (Service Provider)')),
                         DropdownMenuItem(value: 'user', child: Text('User (Customer)')),
+                        DropdownMenuItem(value: 'worker', child: Text('Worker (Service Provider)')),
                       ],
                       onChanged: (value) {
                         if (value != null) setState(() => _selectedRole = value);
                       },
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
 
                   CustomButton(
-                    text: 'Sign Up',
+                    text: 'Create Account',
                     onPressed: _handleSignup,
                     isLoading: _isLoading,
                   ),

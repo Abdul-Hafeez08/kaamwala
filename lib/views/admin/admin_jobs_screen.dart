@@ -117,13 +117,13 @@ class _JobList extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
+                            color: Colors.black.withOpacity(0.04),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),
                         ],
                         border: Border.all(
-                          color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.03),
+                          color: isDark ? Colors.white10 : Colors.black.withOpacity(0.03),
                         ),
                       ),
                       child: Padding(
@@ -144,7 +144,7 @@ class _JobList extends ConsumerWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: _getStatusColor(job.status).withValues(alpha: 0.1),
+                                    color: _getStatusColor(job.status).withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
@@ -219,20 +219,27 @@ class _JobList extends ConsumerWidget {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        'TOTAL CHARGE',
-                                        style: TextStyle(
-                                          fontSize: 9,
+                                        'TOTAL: Rs. ${job.price.toStringAsFixed(0)}',
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.w900,
-                                          color: isDark ? Colors.white24 : Colors.black26,
-                                          letterSpacing: 1,
+                                          fontSize: 16,
+                                          color: Colors.green,
                                         ),
                                       ),
                                       Text(
-                                        'Rs. ${job.price.toStringAsFixed(0)}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 18,
-                                          color: Colors.green,
+                                        'Fee (20%): Rs. ${(job.price * 0.2).toStringAsFixed(0)}',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: isDark ? Colors.white38 : Colors.black38,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Worker: Rs. ${(job.price * 0.8).toStringAsFixed(0)}',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: const Color(0xFFFF9800).withOpacity(0.8),
                                         ),
                                       ),
                                     ],

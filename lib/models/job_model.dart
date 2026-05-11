@@ -21,6 +21,7 @@ class JobModel {
   final DateTime? startedAt;
   final DateTime? completedAt;
   final DateTime createdAt;
+  final bool isGeneralRequest;
 
   JobModel({
     required this.jobId,
@@ -43,6 +44,7 @@ class JobModel {
     this.startedAt,
     this.completedAt,
     DateTime? createdAt,
+    this.isGeneralRequest = false,
   })  : scheduledDate = scheduledDate ?? DateTime.now(),
         createdAt = createdAt ?? DateTime.now();
 
@@ -68,6 +70,7 @@ class JobModel {
       'startedAt': startedAt != null ? Timestamp.fromDate(startedAt!) : null,
       'completedAt': completedAt != null ? Timestamp.fromDate(completedAt!) : null,
       'createdAt': Timestamp.fromDate(createdAt),
+      'isGeneralRequest': isGeneralRequest,
     };
   }
 
@@ -93,6 +96,7 @@ class JobModel {
       startedAt: (map['startedAt'] as Timestamp?)?.toDate(),
       completedAt: (map['completedAt'] as Timestamp?)?.toDate(),
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      isGeneralRequest: map['isGeneralRequest'] ?? false,
     );
   }
 
@@ -139,6 +143,7 @@ class JobModel {
       startedAt: startedAt ?? this.startedAt,
       completedAt: completedAt ?? this.completedAt,
       createdAt: createdAt ?? this.createdAt,
+      isGeneralRequest: isGeneralRequest ?? this.isGeneralRequest,
     );
   }
 }

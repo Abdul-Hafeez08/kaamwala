@@ -91,4 +91,19 @@ class WorkerController {
     }
     await _firestoreService.updateJob(jobId, data);
   }
+
+  Future<void> acceptOpenJob({
+    required String jobId,
+    required String workerId,
+    required String workerName,
+    required String workerImage,
+  }) async {
+    await _firestoreService.updateJob(jobId, {
+      'workerId': workerId,
+      'workerName': workerName,
+      'workerImage': workerImage,
+      'status': 'accepted',
+      'isGeneralRequest': false,
+    });
+  }
 }

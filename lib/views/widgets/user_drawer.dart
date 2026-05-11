@@ -4,6 +4,7 @@ import 'package:kaamwala/providers/auth_provider.dart';
 import 'package:kaamwala/providers/user_provider.dart';
 import 'package:kaamwala/views/auth/login_screen.dart';
 import 'package:kaamwala/views/user/user_complaint_screen.dart';
+import 'custom_loading_indicator.dart';
 
 class UserDrawer extends ConsumerWidget {
   const UserDrawer({super.key});
@@ -62,19 +63,19 @@ class UserDrawer extends ConsumerWidget {
                     user?.email ?? '',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.8),
+                      color: Colors.white.withOpacity(0.8),
                     ),
                   ),
                 ],
               ),
             ),
-            loading: () => Container(
+            loading: () => const SizedBox(
               height: 200,
-              color: Colors.grey,
+              child: Center(child: CustomLoadingIndicator()),
             ),
-            error: (_, __) => Container(
+            error: (_, __) => const SizedBox(
               height: 200,
-              color: Colors.red,
+              child: Center(child: Icon(Icons.error_outline, color: Colors.red)),
             ),
           ),
 
@@ -124,7 +125,7 @@ class UserDrawer extends ConsumerWidget {
                 icon: const Icon(Icons.logout_rounded),
                 label: const Text('Logout'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red.withValues(alpha: 0.1),
+                  backgroundColor: Colors.red.withOpacity(0.1),
                   foregroundColor: Colors.red,
                   elevation: 0,
                   shape: RoundedRectangleBorder(

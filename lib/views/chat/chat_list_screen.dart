@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../providers/chat_provider.dart';
@@ -23,6 +23,12 @@ class ChatListScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Messages'),
+        leading: Navigator.canPop(context)
+            ? null
+            : IconButton(
+                icon: const Icon(Icons.menu_rounded),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              ),
       ),
       body: chatsAsync.when(
         data: (chats) {

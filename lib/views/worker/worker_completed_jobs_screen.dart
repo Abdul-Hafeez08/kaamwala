@@ -29,10 +29,10 @@ class WorkerCompletedJobsScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(32),
                     decoration: BoxDecoration(
-                      color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05),
+                      color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.history_rounded, size: 60, color: Colors.grey.withValues(alpha: 0.5)),
+                    child: Icon(Icons.history_rounded, size: 60, color: Colors.grey.withOpacity(0.5)),
                   ),
                   const SizedBox(height: 24),
                   const Text(
@@ -77,13 +77,13 @@ class WorkerCompletedJobsScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
+                            color: Colors.black.withOpacity(0.04),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),
                         ],
                         border: Border.all(
-                          color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.03),
+                          color: isDark ? Colors.white10 : Colors.black.withOpacity(0.03),
                         ),
                       ),
                       child: Padding(
@@ -112,7 +112,7 @@ class WorkerCompletedJobsScreen extends ConsumerWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                   decoration: BoxDecoration(
-                                    color: isCancelled ? Colors.red.withValues(alpha: 0.1) : Colors.green.withValues(alpha: 0.1),
+                                    color: isCancelled ? Colors.red.withOpacity(0.1) : Colors.green.withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
@@ -152,7 +152,7 @@ class WorkerCompletedJobsScreen extends ConsumerWidget {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.amber.withValues(alpha: 0.1),
+                                  color: Colors.amber.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Row(

@@ -54,3 +54,17 @@ final workerJobsStreamProvider = StreamProvider<List<JobModel>>((ref) {
     error: (_, _) => Stream.value([]),
   );
 });
+
+final openJobsStreamProvider = StreamProvider<List<JobModel>>((ref) {
+  final workerAsync = ref.watch(workerProfileStreamProvider);
+
+  return workerAsync.when(
+    data: (worker) {
+      if (worker == null) return Stream.value([]);
+      final firestoreService = ref.read(firestoreServiceProvider);
+      return firestoreService.streamOpenJobsByCategory(worker.serviceType);
+    },
+    loading: () => Stream.value([]),
+    error: (_, _) => Stream.value([]),
+  );
+});

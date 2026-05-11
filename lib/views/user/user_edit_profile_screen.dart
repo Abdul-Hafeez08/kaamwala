@@ -1,10 +1,14 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:image_picker/image_picker.dart';
 import '../../models/user_model.dart';
 import '../../controllers/user_controller.dart';
 import '../../services/cloudinary_service.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
+import '../widgets/custom_loading_indicator.dart';
 
 class UserEditProfileScreen extends StatefulWidget {
   final UserModel user;
@@ -24,8 +28,11 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
 
   final UserController _userController = UserController();
   final CloudinaryService _cloudinaryService = CloudinaryService();
+  final ImagePicker _picker = ImagePicker();
 
-  String _profileImage = '';
+  String _profileImageUrl = '';
+  File? _mobileImageFile;
+  Uint8List? _webImageBytes;
   bool _isLoading = false;
   bool _isUploadingImage = false;
 
@@ -36,7 +43,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
     _phoneController = TextEditingController(text: widget.user.phone);
     _addressController = TextEditingController(text: widget.user.address);
     _locationController = TextEditingController(text: widget.user.location);
-    _profileImage = widget.user.profileImage;
+    _profileImageUrl = widget.user.profileImage;
   }
 
   @override
@@ -48,29 +55,40 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    setState(() => _isUploadingImage = true);
-
+  Future<void> _pickImage(ImageSource source) async {
     try {
-      if (kIsWeb) {
-        final pickedFile =
-            await _cloudinaryService.pickImageFromGallery();
-        if (pickedFile != null) {
-          final bytes = await pickedFile.readAsBytes();
-          final url =
-              await _cloudinaryService.uploadImage(webBytes: bytes);
-          setState(() => _profileImage = url);
-        }
-      } else {
-        final url = await _userController.pickAndUploadImage();
-        if (url != null) {
-          setState(() => _profileImage = url);
+      final picked = await _picker.pickImage(
+        source: source,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 80,
+      );
+
+      if (picked != null) {
+        setState(() => _isUploadingImage = true);
+        
+        if (kIsWeb) {
+          final bytes = await picked.readAsBytes();
+          setState(() {
+            _webImageBytes = bytes;
+            _mobileImageFile = null;
+          });
+          final url = await _cloudinaryService.uploadImage(webBytes: bytes);
+          setState(() => _profileImageUrl = url);
+        } else {
+          final file = File(picked.path);
+          setState(() {
+            _mobileImageFile = file;
+            _webImageBytes = null;
+          });
+          final url = await _cloudinaryService.uploadImage(imageFile: file);
+          setState(() => _profileImageUrl = url);
         }
       }
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: SelectableText(error.toString())),
+          SnackBar(content: SelectableText('Upload Error: $error')),
         );
       }
     } finally {
@@ -89,7 +107,7 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
         'phone': _phoneController.text.trim(),
         'address': _addressController.text.trim(),
         'location': _locationController.text.trim(),
-        'profileImage': _profileImage,
+        'profileImage': _profileImageUrl,
       });
 
       if (!mounted) return;
@@ -118,51 +136,59 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Profile'),
+        title: const Text('Edit Profile', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
               // Profile Image Picker
               Center(
-                child: GestureDetector(
-                  onTap: _isUploadingImage ? null : _pickImage,
-                  child: Stack(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: const Color(0xFFFF9800), width: 2),
-                        ),
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundColor: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF8F8F8),
-                          backgroundImage: _profileImage.isNotEmpty ? NetworkImage(_profileImage) : null,
-                          child: _isUploadingImage
-                              ? const CircularProgressIndicator(color: Color(0xFFFF9800))
-                              : _profileImage.isEmpty
-                                  ? Icon(Icons.person_rounded, size: 50, color: Colors.grey.shade400)
-                                  : null,
-                        ),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFFFF9800), width: 2),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFFF9800),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 18),
-                        ),
+                      child: CircleAvatar(
+                        radius: 60,
+                        backgroundColor: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF8F8F8),
+                        backgroundImage: _isUploadingImage 
+                          ? null 
+                          : (_webImageBytes != null 
+                              ? MemoryImage(_webImageBytes!) as ImageProvider
+                              : (_mobileImageFile != null 
+                                  ? FileImage(_mobileImageFile!)
+                                  : (_profileImageUrl.isNotEmpty ? NetworkImage(_profileImageUrl) : null))),
+                        child: _isUploadingImage
+                            ? const CustomLoadingIndicator(size: 40)
+                            : (_profileImageUrl.isEmpty && _mobileImageFile == null && _webImageBytes == null
+                                ? Icon(Icons.person_rounded, size: 60, color: Colors.grey.shade400)
+                                : null),
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _ImagePickButton(
+                          onPressed: () => _pickImage(ImageSource.gallery),
+                          icon: Icons.photo_library_rounded,
+                          label: 'Gallery',
+                        ),
+                        const SizedBox(width: 16),
+                        _ImagePickButton(
+                          onPressed: () => _pickImage(ImageSource.camera),
+                          icon: Icons.camera_alt_rounded,
+                          label: 'Camera',
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 40),
@@ -173,37 +199,35 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
                 hintText: 'Enter your name',
                 prefixIcon: Icons.person_rounded,
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
+                  if (value == null || value.isEmpty) return 'Please enter your name';
                   return null;
                 },
               ),
               CustomTextField(
                 controller: _phoneController,
                 label: 'Phone Number',
-                hintText: 'Enter your phone number',
+                hintText: '03XXXXXXXXX',
                 prefixIcon: Icons.phone_rounded,
                 keyboardType: TextInputType.phone,
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
-                  }
+                  if (value == null || value.isEmpty) return 'Please enter your phone number';
+                  if (value.length != 11) return 'Phone number must be 11 digits';
                   return null;
                 },
               ),
               CustomTextField(
                 controller: _addressController,
-                label: 'Address',
-                hintText: 'Enter your address',
+                label: 'Full Address',
+                hintText: 'House #, Street, Area',
                 prefixIcon: Icons.home_rounded,
               ),
               CustomTextField(
                 controller: _locationController,
-                label: 'City / Location',
+                label: 'City / Region',
                 hintText: 'e.g. Lahore, Pakistan',
                 prefixIcon: Icons.location_on_rounded,
               ),
+              const SizedBox(height: 100),
             ],
           ),
         ),
@@ -227,6 +251,33 @@ class _UserEditProfileScreenState extends State<UserEditProfileScreen> {
             isLoading: _isLoading,
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ImagePickButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final IconData icon;
+  final String label;
+
+  const _ImagePickButton({
+    required this.onPressed,
+    required this.icon,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 18),
+      label: Text(label),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: const Color(0xFFFF9800),
+        side: const BorderSide(color: Color(0xFFFF9800)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
     );
   }

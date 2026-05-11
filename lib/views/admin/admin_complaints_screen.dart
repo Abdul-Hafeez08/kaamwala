@@ -20,7 +20,7 @@ class AdminComplaintsScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.mark_email_read_rounded, size: 64, color: Colors.grey.withValues(alpha: 0.5)),
+                  Icon(Icons.mark_email_read_rounded, size: 64, color: Colors.grey.withOpacity(0.5)),
                   const SizedBox(height: 16),
                   const Text('No Complaints', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
@@ -44,13 +44,13 @@ class AdminComplaintsScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
+                      color: Colors.black.withOpacity(0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     ),
                   ],
                   border: Border.all(
-                    color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05),
+                    color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05),
                   ),
                 ),
                 child: Padding(
@@ -70,7 +70,7 @@ class AdminComplaintsScreen extends ConsumerWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: isResolved ? Colors.green.withValues(alpha: 0.1) : Colors.red.withValues(alpha: 0.1),
+                              color: isResolved ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(

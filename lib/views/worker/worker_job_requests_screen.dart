@@ -95,7 +95,7 @@ class WorkerJobRequestsScreen extends ConsumerWidget {
                                   width: 50,
                                   height: 50,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFFF9800).withValues(alpha: 0.1),
+                                    color: const Color(0xFFFF9800).withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                   child: const Icon(Icons.person_rounded, color: Color(0xFFFF9800)),
@@ -142,7 +142,7 @@ class WorkerJobRequestsScreen extends ConsumerWidget {
                                 width: double.infinity,
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
+                                  color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Row(

@@ -49,7 +49,7 @@ class JobDetailScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(job.status).withValues(alpha: 0.1),
+                      color: _getStatusColor(job.status).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -86,7 +86,7 @@ class JobDetailScreen extends StatelessWidget {
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20),
                   ),
-                  border: Border.all(color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
+                  border: Border.all(color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05)),
                 ),
                 child: Text(
                   job.description,
@@ -121,8 +121,8 @@ class JobDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // 3. Worker Details (Show if accepted/working/completed)
-            if (job.status != 'pending') ...[
+            // 3. Worker Details (Show if accepted/working/completed and worker assigned)
+            if (job.workerId.isNotEmpty) ...[
               const Text('ASSIGNED WORKER', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 1)),
               const SizedBox(height: 8),
               _buildSectionCard(
@@ -131,7 +131,7 @@ class JobDetailScreen extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      backgroundColor: const Color(0xFFFF9800).withValues(alpha: 0.1),
+                      backgroundColor: const Color(0xFFFF9800).withOpacity(0.1),
                       backgroundImage: job.workerImage.isNotEmpty ? NetworkImage(job.workerImage) : null,
                       child: job.workerImage.isEmpty ? const Icon(Icons.engineering_rounded, color: Color(0xFFFF9800)) : null,
                     ),
@@ -145,7 +145,7 @@ class JobDetailScreen extends StatelessWidget {
                             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            'Provider ID: ${job.workerId.substring(0, 6)}',
+                            'Provider ID: ${job.workerId.length > 6 ? job.workerId.substring(0, 6) : job.workerId}',
                             style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                           ),
                         ],
@@ -280,11 +280,11 @@ class JobDetailScreen extends StatelessWidget {
         color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05),
+          color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: Colors.black.withOpacity(0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -297,6 +297,7 @@ class JobDetailScreen extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'pending':
+      case 'open':
         return Colors.orange;
       case 'accepted':
       case 'working':
