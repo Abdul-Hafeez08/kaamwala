@@ -21,14 +21,51 @@ class ServiceCategory {
   }
 
   factory ServiceCategory.fromMap(Map<String, dynamic> map, String docId) {
+    // To avoid Icon Tree Shaking issues, we try to match the icon from our predefined list
+    // If not found, we use a fallback constant icon
+    final String name = map['name'] ?? '';
+    final IconData iconData = _getIconForService(name);
+
     return ServiceCategory(
       id: docId,
-      name: map['name'] ?? '',
-      icon: IconData(
-        map['iconCodePoint'] ?? Icons.home_repair_service.codePoint,
-        fontFamily: map['iconFontFamily'] ?? 'MaterialIcons',
-      ),
+      name: name,
+      icon: iconData,
     );
+  }
+
+  static IconData _getIconForService(String name) {
+    switch (name) {
+      case 'Electrician':
+        return Icons.electrical_services;
+      case 'Plumber':
+        return Icons.plumbing;
+      case 'AC Technician':
+        return Icons.ac_unit;
+      case 'Solar Panel Service':
+        return Icons.solar_power;
+      case 'Home Tutor':
+        return Icons.school;
+      case 'Car Wash at Home':
+        return Icons.local_car_wash;
+      case 'Painter':
+        return Icons.format_paint;
+      case 'CCTV Service':
+        return Icons.videocam;
+      case 'Event Decoration':
+        return Icons.celebration;
+      case 'Beauty Salon / Haircut':
+        return Icons.content_cut;
+      case 'House Cleaning':
+        return Icons.cleaning_services;
+      case 'Maid Service':
+        return Icons.home;
+      case 'Carpenter':
+        return Icons.carpenter;
+      case 'Laundry & Ironing':
+        return Icons.local_laundry_service;
+      default:
+        return Icons.home_repair_service;
+    }
   }
 }
 
